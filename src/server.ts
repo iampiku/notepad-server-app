@@ -2,11 +2,13 @@ import cors from "cors";
 import express from "express";
 
 import noteRouter from "./routes/notesRoute";
+import userRouter from "./routes/userRoute";
 
 const app = express();
 app.use(cors());
 
 app.use("/note", noteRouter);
+app.use("/user", userRouter);
 
 const PORT = process.env.PORT ?? 8000;
 
