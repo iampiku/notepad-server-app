@@ -26,6 +26,6 @@ router.patch(
 	updateNoteController
 );
 router.delete("/note/:noteId", removeNoteController);
-router.get("/notes/:userId", getNoteController);
+router.get("/note/:userId", getNoteController);
 
 export default router;
