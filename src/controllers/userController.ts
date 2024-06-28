@@ -37,6 +37,7 @@ const getUserController = async (req: Request, res: Response) => {
 
 const updateUserController = async (req: Request, res: Response) => {
 	const userId = req.params.id || null;
+
 	if (!userId)
 		return res.status(400).send({
 			errorMessage: 'User cannot be fetched without "userId"!',

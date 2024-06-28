@@ -14,18 +14,18 @@ import { handleValidationErrors } from "../middlewares/payloadValidationMiddlewa
 const router = express.Router();
 
 router.post(
-	"/note",
+	"/",
 	notesValidationRules,
 	handleValidationErrors,
 	addNoteController
 );
 router.patch(
-	"/note",
+	"/",
 	notesValidationRules,
 	handleValidationErrors,
 	updateNoteController
 );
-router.delete("/note/:noteId", removeNoteController);
-router.get("/note/:userId", getNoteController);
+router.delete("/:noteId", removeNoteController);
+router.get("/:userId", getNoteController);
 
 export default router;

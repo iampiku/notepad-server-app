@@ -5,12 +5,8 @@ import mongoose from "mongoose";
 import noteRouter from "./routes/notesRoute";
 import userRouter from "./routes/userRoute";
 
-import dbConfig from "./config";
-
 const app = express();
 app.use(cors());
-
-console.log(dbConfig);
 
 app.use("/notes", noteRouter);
 app.use("/users", userRouter);

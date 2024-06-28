@@ -13,18 +13,18 @@ import { handleValidationErrors } from "../middlewares/payloadValidationMiddlewa
 const router = express.Router();
 
 router.post(
-	"/user",
+	"/",
 	userValidationRules,
 	handleValidationErrors,
 	addUserController
 );
 router.patch(
-	"/user/:id",
+	"/:id",
 	userValidationRules,
 	handleValidationErrors,
 	updateUserController
 );
-router.delete("/user/:id", removeUserController);
-router.get("/users", getUserController);
+router.delete("/:id", removeUserController);
+router.get("/", getUserController);
 
 export default router;

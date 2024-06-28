@@ -1,5 +1,7 @@
 import { body } from "express-validator";
 
+import jwt from "jsonwebtoken";
+
 export const notesValidationRules = [
 	body("note").notEmpty().withMessage("Notes is required."),
 	body("userId")
@@ -27,3 +29,9 @@ export const userValidationRules = [
 		.withMessage("Invalid user email"),
 	body("password").isLength({ min: 6 }).withMessage("Password is too short"),
 ];
+
+export const generateToken = (id: string, role: string) => {
+	return jwt.sign({ id, role }, "SIGN_WEB_TOKEN", {
+		expiresIn: "30d",
+	});
+};
