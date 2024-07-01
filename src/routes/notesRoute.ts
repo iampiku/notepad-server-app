@@ -10,6 +10,7 @@ import {
 import { notesValidationRules } from "../utils";
 
 import { handleValidationErrors } from "../middlewares/payloadValidationMiddleware";
+import { authGuard } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
@@ -26,6 +27,6 @@ router.patch(
 	updateNoteController
 );
 router.delete("/:noteId", removeNoteController);
-router.get("/:userId", getNoteController);
+router.get("/", authGuard, getNoteController);
 
 export default router;

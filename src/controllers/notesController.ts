@@ -29,7 +29,7 @@ const addNoteController = async (req: Request, res: Response) => {
 };
 
 const getNoteController = async (req: Request, res: Response) => {
-	const userId = req.params.userId || null;
+	const userId: string | null = req.body.userId || null;
 
 	if (!userId) {
 		return res.status(400).send({
@@ -50,7 +50,7 @@ const getNoteController = async (req: Request, res: Response) => {
 
 		if (!noteCount)
 			return res.status(404).send({
-				errorMessage: "No notes found!",
+				message: "No notes found!",
 			});
 
 		return res.status(200).send({

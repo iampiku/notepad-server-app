@@ -1,7 +1,7 @@
 import express from "express";
 
 import {
-	addUserController,
+	// addUserController,
 	getUserController,
 	removeUserController,
 	updateUserController,
@@ -12,12 +12,12 @@ import { handleValidationErrors } from "../middlewares/payloadValidationMiddlewa
 
 const router = express.Router();
 
-router.post(
-	"/",
-	userValidationRules,
-	handleValidationErrors,
-	addUserController
-);
+// router.post(
+// 	"/",
+// 	userValidationRules,
+// 	handleValidationErrors,
+// 	addUserController
+// );
 router.patch(
 	"/:id",
 	userValidationRules,

@@ -2,22 +2,22 @@ import { Request, Response } from "express";
 
 import User from "../models/user";
 
-const addUserController = async (req: Request, res: Response) => {
-	try {
-		const newUser = new User({
-			...req.body,
-		});
-		const savedUser = await newUser.save();
-		return res
-			.status(201)
-			.send({ message: `Note created successfully! ${savedUser.id}` });
-	} catch (error) {
-		console.error(error);
-		return res.status(500).send({
-			errorMessage: "Oops! something went wrong.",
-		});
-	}
-};
+// const addUserController = async (req: Request, res: Response) => {
+// 	try {
+// 		const newUser = new User({
+// 			...req.body,
+// 		});
+// 		const savedUser = await newUser.save();
+// 		return res
+// 			.status(201)
+// 			.send({ message: `User registered successfully ${savedUser.id}` });
+// 	} catch (error) {
+// 		console.error(error);
+// 		return res.status(500).send({
+// 			errorMessage: "Oops! something went wrong.",
+// 		});
+// 	}
+// };
 
 const getUserController = async (req: Request, res: Response) => {
 	try {
@@ -81,7 +81,7 @@ const removeUserController = async (req: Request, res: Response) => {
 };
 
 export {
-	addUserController,
+	// addUserController,
 	getUserController,
 	updateUserController,
 	removeUserController,

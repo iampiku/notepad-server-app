@@ -1,6 +1,7 @@
 import { body } from "express-validator";
 
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 export const notesValidationRules = [
 	body("note").notEmpty().withMessage("Notes is required."),
@@ -30,8 +31,15 @@ export const userValidationRules = [
 	body("password").isLength({ min: 6 }).withMessage("Password is too short"),
 ];
 
-export const generateToken = (id: string, role: string) => {
-	return jwt.sign({ id, role }, "SIGN_WEB_TOKEN", {
+export interface UserPayload {
+	id: mongoose.Schema.Types.ObjectId;
+	email: string;
+}
+
+export const generateToken = (user: UserPayload) => {
+	return jwt.sign(user, "SIGN_WEB_TOKEN", {
 		expiresIn: "30d",
 	});
 };
+
+export const SALT_ROUND = 10;
