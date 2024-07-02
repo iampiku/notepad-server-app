@@ -1,7 +1,6 @@
 import express from "express";
 
 import {
-	// addUserController,
 	getUserController,
 	removeUserController,
 	updateUserController,
@@ -9,22 +8,18 @@ import {
 
 import { userValidationRules } from "../utils";
 import { handleValidationErrors } from "../middlewares/payloadValidationMiddleware";
+import { authGuard } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-// router.post(
-// 	"/",
-// 	userValidationRules,
-// 	handleValidationErrors,
-// 	addUserController
-// );
 router.patch(
 	"/:id",
+	authGuard,
 	userValidationRules,
 	handleValidationErrors,
 	updateUserController
 );
-router.delete("/:id", removeUserController);
-router.get("/", getUserController);
+router.delete("/:id", authGuard, removeUserController);
+router.get("/:id", authGuard, getUserController);
 
 export default router;

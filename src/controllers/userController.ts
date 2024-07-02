@@ -1,31 +1,20 @@
 import { Request, Response } from "express";
 
 import User from "../models/user";
-
-// const addUserController = async (req: Request, res: Response) => {
-// 	try {
-// 		const newUser = new User({
-// 			...req.body,
-// 		});
-// 		const savedUser = await newUser.save();
-// 		return res
-// 			.status(201)
-// 			.send({ message: `User registered successfully ${savedUser.id}` });
-// 	} catch (error) {
-// 		console.error(error);
-// 		return res.status(500).send({
-// 			errorMessage: "Oops! something went wrong.",
-// 		});
-// 	}
-// };
+import Notes from "../models/notes";
 
 const getUserController = async (req: Request, res: Response) => {
+	const userId = req.params.id || null;
 	try {
-		const users = await User.find();
-		if (!users.length)
+		const users = userId
+			? await User.findOne({ id: userId })
+			: await User.find();
+
+		if (!users)
 			return res
 				.status(404)
 				.send({ errorMessage: "No Users found in the database" });
+
 		return res.status(200).send({ users });
 	} catch (error) {
 		console.error(error);
@@ -68,9 +57,15 @@ const removeUserController = async (req: Request, res: Response) => {
 		});
 
 	try {
-		const deletedUser = await User.findByIdAndDelete(userId);
+		const [deletedNotes, deletedUser] = await Promise.all([
+			Notes.deleteMany({ userId }),
+			User.findByIdAndDelete(userId),
+		]);
+
 		return res.status(200).send({
-			message: `Note deleted successfully ${deletedUser?.id}`,
+			message: `User deleted successfully ${deletedUser?.id} with ${
+				deletedNotes.deletedCount || 0
+			} notes`,
 		});
 	} catch (error) {
 		console.error(error);
@@ -80,9 +75,4 @@ const removeUserController = async (req: Request, res: Response) => {
 	}
 };
 
-export {
-	// addUserController,
-	getUserController,
-	updateUserController,
-	removeUserController,
-};
+export { getUserController, updateUserController, removeUserController };

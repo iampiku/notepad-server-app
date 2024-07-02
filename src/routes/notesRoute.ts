@@ -3,7 +3,8 @@ import express from "express";
 import {
 	addNoteController,
 	getNoteController,
-	removeNoteController,
+	removeAllNotesController,
+	removeNoteByIdController,
 	updateNoteController,
 } from "../controllers/notesController";
 
@@ -16,17 +17,20 @@ const router = express.Router();
 
 router.post(
 	"/",
+	authGuard,
 	notesValidationRules,
 	handleValidationErrors,
 	addNoteController
 );
 router.patch(
 	"/",
+	authGuard,
 	notesValidationRules,
 	handleValidationErrors,
 	updateNoteController
 );
-router.delete("/:noteId", removeNoteController);
+router.delete("/:noteId", authGuard, removeNoteByIdController);
+router.delete("/", authGuard, removeAllNotesController);
 router.get("/", authGuard, getNoteController);
 
 export default router;

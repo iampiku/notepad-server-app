@@ -92,12 +92,12 @@ const updateNoteController = async (req: Request, res: Response) => {
 	}
 };
 
-const removeNoteController = async (req: Request, res: Response) => {
+const removeNoteByIdController = async (req: Request, res: Response) => {
 	const noteId = req.params.noteId || null;
 
 	if (!noteId)
-		return res.status(404).send({
-			errorMessage: `No note found again this ${noteId} id`,
+		return res.status(401).send({
+			errorMessage: `Note id is missing`,
 		});
 
 	try {
@@ -113,9 +113,37 @@ const removeNoteController = async (req: Request, res: Response) => {
 	}
 };
 
+const removeAllNotesController = async (req: Request, res: Response) => {
+	const userId = req.params.userId || null;
+
+	if (!userId)
+		return res.status(401).send({
+			errorMessage: `User id is missing`,
+		});
+
+	try {
+		const isNotePresent = await Notes.findOne({ userId });
+		if (!isNotePresent)
+			return res.status(404).send({
+				errorMessage: `No notes found`,
+			});
+		const deletedNotes = await Notes.deleteMany({ userId });
+
+		return res.status(200).send({
+			errorMessage: `${deletedNotes.deletedCount} notes deleted.`,
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).send({
+			errorMessage: "Oops! something went wrong.",
+		});
+	}
+};
+
 export {
 	addNoteController,
 	getNoteController,
 	updateNoteController,
-	removeNoteController,
+	removeAllNotesController,
+	removeNoteByIdController,
 };
