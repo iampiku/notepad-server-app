@@ -8,7 +8,7 @@ export interface IUser extends Document {
 
 const SALT_ROUND = 10;
 
-const UserSchema: Schema = new mongoose.Schema({
+const UserSchema: Schema = new mongoose.Schema<IUser>({
 	name: {
 		type: String,
 		required: true,

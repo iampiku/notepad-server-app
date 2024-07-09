@@ -7,13 +7,13 @@ interface Note {
 
 export interface INotes extends Document {
 	note: Note;
-	createdAt: string;
-	updatedAt: string;
+	createdAt: Date;
+	updatedAt: Date;
 	userId: mongoose.Schema.Types.ObjectId;
 	status: "Todo" | "Completed" | "Inprogress" | "Pending";
 }
 
-const NotesSchema: Schema = new mongoose.Schema({
+const NotesSchema: Schema = new mongoose.Schema<INotes>({
 	note: {
 		title: {
 			type: String,
