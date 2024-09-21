@@ -1,17 +1,11 @@
 import express from "express";
 
-import {
-	addNoteController,
-	getNoteController,
-	removeAllNotesController,
-	removeNoteByIdController,
-	updateNoteController,
-} from "../controllers/notesController";
+import notesController from "@/controllers/notesController";
 
-import { notesValidationRules } from "../utils";
+import { notesValidationRules } from "@/utils";
 
-import { handleValidationErrors } from "../middlewares/payloadValidationMiddleware";
-import { authGuard } from "../middlewares/authMiddleware";
+import { authGuard } from "@/middlewares/authMiddleware";
+import { handleValidationErrors } from "@/middlewares/payloadValidationMiddleware";
 
 const router = express.Router();
 
@@ -20,17 +14,17 @@ router.post(
 	authGuard,
 	notesValidationRules,
 	handleValidationErrors,
-	addNoteController
+	notesController.addNoteController
 );
 router.patch(
 	"/",
 	authGuard,
 	notesValidationRules,
 	handleValidationErrors,
-	updateNoteController
+	notesController.updateNoteController
 );
-router.delete("/:noteId", authGuard, removeNoteByIdController);
-router.delete("/", authGuard, removeAllNotesController);
-router.get("/", authGuard, getNoteController);
+router.delete("/:noteId", authGuard, notesController.removeNoteByIdController);
+router.delete("/", authGuard, notesController.removeAllNotesController);
+router.get("/", authGuard, notesController.getNoteController);
 
 export default router;

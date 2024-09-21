@@ -1,14 +1,11 @@
 import express from "express";
 
-import {
-	getUserController,
-	removeUserController,
-	updateUserController,
-} from "../controllers/userController";
+import userController from "@/controllers/userController";
 
-import { userValidationRules } from "../utils";
-import { handleValidationErrors } from "../middlewares/payloadValidationMiddleware";
-import { authGuard } from "../middlewares/authMiddleware";
+import { userValidationRules } from "@/utils";
+
+import { authGuard } from "@/middlewares/authMiddleware";
+import { handleValidationErrors } from "@/middlewares/payloadValidationMiddleware";
 
 const router = express.Router();
 
@@ -17,9 +14,9 @@ router.patch(
 	authGuard,
 	userValidationRules,
 	handleValidationErrors,
-	updateUserController
+	userController.updateUserController
 );
-router.delete("/:id", authGuard, removeUserController);
-router.get("/:id", authGuard, getUserController);
+router.delete("/:id", authGuard, userController.removeUserController);
+router.get("/:id", authGuard, userController.getUserController);
 
 export default router;
