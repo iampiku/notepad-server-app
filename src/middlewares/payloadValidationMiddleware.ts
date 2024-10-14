@@ -6,7 +6,8 @@ export const handleValidationErrors = (
 	res: Response,
 	next: NextFunction
 ) => {
-	const errors = validationResult(req.body);
+	const user = req.body.user;
+	const errors = validationResult(req.body.note);
 	if (!errors.isEmpty())
 		return res.status(400).json({ errors: errors.array() });
 	next();

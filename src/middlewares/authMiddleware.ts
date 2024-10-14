@@ -9,7 +9,7 @@ export const authGuard = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const token = req.headers.authorization?.split(" ")[1];
+	const token = req.headers.authorization?.split(" ")[1] || null;
 
 	if (!token)
 		return res.status(403).send({
@@ -33,13 +33,13 @@ export const authGuard = async (
 		});
 
 	const email: string = decodedPayload["email"];
-	const user = await User.findOne({ email });
+	const user = await User.findOne({ email }, { email: 1, id: 1 });
 
 	if (!user)
 		return res.status(401).send({
 			errorMessage: "Unauthorized",
 		});
 
-	req.body.user = { ...user };
+	req.body.user = { email: user.email, id: user.id };
 	next();
 };

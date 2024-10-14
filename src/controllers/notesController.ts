@@ -1,13 +1,17 @@
 import { Request, Response } from "express";
 
-import User from "@/models/user";
-import Notes from "@/models/notes";
+import Notes, { INotes } from "@/models/notes";
 
 class NoteController {
-	async addNoteController(req: Request, res: Response) {
+	async addNoteController(
+		req: Request<{}, {}, { user: { id: string; email: string }; note: INotes }>,
+		res: Response
+	) {
 		try {
+			const userId = req.body.user.id;
 			const newNote = new Notes({
 				...req.body,
+				userId,
 			});
 
 			const savedNote = await newNote.save();
@@ -23,25 +27,14 @@ class NoteController {
 		}
 	}
 
-	async getNoteController(req: Request, res: Response) {
-		const userId: string | null = req.body.userId || null;
-
-		if (!userId) {
-			return res.status(400).send({
-				errorMessage: 'Notes cannot be fetched without "userId"!',
-			});
-		}
-
+	async getNoteController(
+		req: Request<{}, {}, { user: { id: string; email: string } }>,
+		res: Response
+	) {
+		const { user } = req.body;
 		try {
-			const user = await User.findById(userId);
-			if (!user) {
-				return res.status(404).send({
-					errorMessage: `No user found again this ${userId} id!`,
-				});
-			}
-
-			const notes = await Notes.find({ userId });
-			const noteCount = await Notes.countDocuments({ userId });
+			const notes = await Notes.find({ userId: user.id });
+			const noteCount = notes.length;
 
 			if (!noteCount)
 				return res.status(404).send({
@@ -60,25 +53,35 @@ class NoteController {
 		}
 	}
 
-	async updateNoteController(req: Request, res: Response) {
+	async updateNoteController(
+		req: Request<
+			{},
+			{},
+			{ user: { id: string; email: string }; note: INotes },
+			{ noteId: string }
+		>,
+		res: Response
+	) {
+		const noteId = req.query.noteId;
+		const updatedNote = req.body.note;
 		try {
-			const user = await User.findById(req.body.userId);
-			if (!user) {
+			const updatedNoteDocument = await Notes.findByIdAndUpdate(noteId, {
+				note: {
+					title: updatedNote.note.title,
+					description: updatedNote.note.description,
+				},
+				status: updatedNote.status,
+			});
+
+			if (!updatedNoteDocument)
 				return res.status(404).send({
-					errorMessage: `No user found again this ${req.body.note.userId} id`,
-				});
-			}
-
-			const updatedNote = await Notes.findByIdAndUpdate(req.body.id, req.body);
-
-			if (!updatedNote)
-				return res.status(404).send({
-					errorMessage: `No note found again this ${req.body.id} id`,
+					errorMessage: `No note found again this ${req.query.noteId} id`,
 				});
 
-			return res
-				.status(201)
-				.send({ message: `Note updated successfully! ${updatedNote.id}` });
+			return res.status(201).send({
+				message: `Note updated successfully!`,
+				note: updatedNoteDocument,
+			});
 		} catch (error) {
 			console.error(error);
 			return res.status(500).send({
@@ -86,6 +89,15 @@ class NoteController {
 			});
 		}
 	}
+
+	async updateNoteStatusController(
+		req: Request<
+			{ noteId: string },
+			{},
+			{ user: { id: string; email: string }; status: INotes }
+		>,
+		res: Response
+	) {}
 
 	async removeNoteByIdController(req: Request, res: Response) {
 		const noteId = req.params.noteId || null;
@@ -108,8 +120,11 @@ class NoteController {
 		}
 	}
 
-	async removeAllNotesController(req: Request, res: Response) {
-		const userId = req.params.userId || null;
+	async removeAllNotesController(
+		req: Request<{}, {}, { user: { id: string; email: string } }>,
+		res: Response
+	) {
+		const userId = req.body.user.id;
 
 		if (!userId)
 			return res.status(401).send({

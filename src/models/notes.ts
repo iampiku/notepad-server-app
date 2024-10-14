@@ -5,6 +5,14 @@ interface Note {
 	description: string;
 }
 
+// {
+// 	"title": "Meeting Notes",
+// 	"content": "Discussed project timeline...",
+// 	"category": "Work",
+// 	"tags": ["project", "meeting"], future improvements.
+// 	"priority": "high"
+// }
+
 export interface INotes extends Document {
 	note: Note;
 	createdAt: Date;
@@ -13,36 +21,41 @@ export interface INotes extends Document {
 	status: "Todo" | "Completed" | "Inprogress" | "Pending";
 }
 
-const NotesSchema: Schema = new mongoose.Schema<INotes>({
-	note: {
-		title: {
+const NotesSchema: Schema = new mongoose.Schema<INotes>(
+	{
+		note: {
+			title: {
+				type: String,
+				required: true,
+			},
+			description: {
+				type: String,
+				required: true,
+			},
+		},
+		status: {
 			type: String,
+			enum: ["Todo", "Completed", "Inprogress", "Pending"],
+			default: "Todo",
+		},
+		userId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
 			required: true,
 		},
-		description: {
-			type: String,
-			required: true,
+	},
+	{
+		timestamps: true,
+		toJSON: {
+			transform(doc, ret) {
+				ret.id = ret._id;
+				delete ret._id;
+				delete ret.__v;
+				return ret;
+			},
 		},
-	},
-	createdAt: {
-		type: Date,
-		default: Date.now,
-	},
-	updatedAt: {
-		type: Date,
-		default: Date.now,
-	},
-	status: {
-		type: String,
-		enum: ["Todo", "Completed", "Inprogress", "Pending"],
-		default: "Todo",
-	},
-	userId: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "User",
-		required: true,
-	},
-});
+	}
+);
 
 const Notes = mongoose.model<INotes>("Notes", NotesSchema);
 

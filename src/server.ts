@@ -5,12 +5,12 @@ import express, { Request, Response } from "express";
 
 import User from "./models/user";
 
-import userRouter from "./routes/userRoute";
-import noteRouter from "./routes/notesRoute";
+import userRouter from "@/routes/userRoute";
+import noteRouter from "@/routes/notesRoute";
 
 import { compare, hash } from "bcryptjs";
-import { generateToken, SALT_ROUND, userValidationRules } from "./utils";
-import { handleValidationErrors } from "./middlewares/payloadValidationMiddleware";
+import { generateToken, SALT_ROUND, userValidationRules } from "@/utils";
+import { handleValidationErrors } from "@/middlewares/payloadValidationMiddleware";
 
 const app = express();
 
@@ -19,12 +19,12 @@ app.use(bodyParser.json());
 app.use("/notes", noteRouter);
 app.use("/users", userRouter);
 
-app.use((req, res, next) => {
-	res.status(404).json({
-		error: "Not Found",
-		message: "The requested route does not exist",
-	});
-});
+// app.use((req, res, next) => {
+// 	res.status(404).json({
+// 		error: "Not Found",
+// 		message: "The requested route does not exist",
+// 	});
+// });
 
 const PORT = process.env.PORT ?? 8000;
 
